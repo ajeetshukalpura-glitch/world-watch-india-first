@@ -4,9 +4,15 @@ const path = require("path");
 const app = express();
 const PORT = process.env.PORT || 10000;
 
-app.use(express.static(path.join(__dirname, "public")));
+const publicPath = path.join(__dirname, "public");
 
-// Live World News — GDELT
+// Serve frontend files
+app.use(express.static(publicPath));
+
+/* =========================================
+   LIVE WORLD NEWS — GDELT
+========================================= */
+
 app.get("/api/news", async (req, res) => {
   try {
     const topic = String(req.query.topic || "world")
@@ -31,7 +37,8 @@ app.get("/api/news", async (req, res) => {
 
     const gdeltUrl =
       "https://api.gdeltproject.org/api/v2/doc/doc" +
-      `?query=${encodeURIComponent(query)}` +
+      "?query=" +
+      encodeURIComponent(query) +
       "&mode=artlist" +
       "&format=json" +
       "&maxrecords=30" +
@@ -61,13 +68,15 @@ app.get("/api/news", async (req, res) => {
 
     res.json({
       ok: true,
-      topic,
+      topic: topic,
       updatedAt: new Date().toISOString(),
       count: articles.length,
-      articles
+      articles: articles
     });
+
   } catch (error) {
-    console.error("News API error:", error);
+
+    console.error("GDELT News Error:", error);
 
     res.status(502).json({
       ok: false,
@@ -77,23 +86,73 @@ app.get("/api/news", async (req, res) => {
   }
 });
 
-// Health check
+
+/* =========================================
+   HEALTH CHECK
+========================================= */
+
 app.get("/health", (req, res) => {
   res.json({
     status: "World Watch API is Live",
     project: "WORLD WATCH — INDIA FIRST",
+    server: "Node.js + Express",
     time: new Date().toISOString()
   });
 });
 
-// Frontend fallback
-app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname, "public", "index.html"));
+
+/* =========================================
+   API STATUS
+========================================= */
+
+app.get("/api/status", (req, res) => {
+  res.json({
+    ok: true,
+    message: "WORLD WATCH is running",
+    news: "GDELT",
+    markets: "TradingView",
+    refresh: "5 minutes",
+    time: new Date().toISOString()
+  });
 });
 
-// Start server
+
+/* =========================================
+   FRONTEND FALLBACK
+   Express 5 compatible
+========================================= */
+
+app.use((req, res) => {
+  res.sendFile(path.join(publicPath, "index.html"));
+});
+
+
+/* =========================================
+   ERROR HANDLER
+========================================= */
+
+app.use((err, req, res, next) => {
+  console.error("Server Error:", err);
+
+  res.status(500).json({
+    ok: false,
+    error: "Internal server error"
+  });
+});
+
+
+/* =========================================
+   START SERVER
+========================================= */
+
 app.listen(PORT, () => {
-  console.log(
-    `🌍 WORLD WATCH — INDIA FIRST running on port ${PORT}`
-  );
+  console.log("");
+  console.log("======================================");
+  console.log("🌍 WORLD WATCH — INDIA FIRST");
+  console.log("======================================");
+  console.log(`🚀 Server running on port ${PORT}`);
+  console.log(`📡 News API: /api/news`);
+  console.log(`❤️ Health: /health`);
+  console.log(`📊 Status: /api/status`);
+  console.log("======================================");
 });
