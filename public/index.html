@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>WORLD WATCH — INDIA FIRST</title>
+
+  <script type="module"
+    src="https://widgets.tradingview-widget.com/w/en/tv-ticker-tape.js">
+  </script>
+
+  <script type="module"
+    src="https://widgets.tradingview-widget.com/w/en/tv-market-overview.js">
+  </script>
+
+  <style>
+    :root {
+      --bg: #071018;
+      --card: #0d1822;
+      --line: #1b2b39;
+      --text: #edf5fa;
+      --muted: #8fa4b5;
+      --accent: #ffb000;
+      --red: #ff5d5d;
+      --green: #35d07f;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background:
+        radial-gradient(circle at top, #122331 0, #071018 42%);
+      color: var(--text);
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    header {
+      padding: 18px 20px;
+      border-bottom: 1px solid var(--line);
+      position: sticky;
+      top: 0;
+      background: rgba(7, 16, 24, 0.95);
+      backdrop-filter: blur(10px);
+      z-index: 10;
+    }
+
+    .brand {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .title {
+      font-size: 25px;
+      font-weight: 800;
+      letter-spacing: 0.8px;
+    }
+
+    .sub {
+      color: var(--muted);
+      font-size: 12px;
+      margin-top: 4px;
+    }
+
+    .live {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      font-weight: 700;
+      font-size: 12px;
+    }
+
+    .dot {
+      width: 9px;
+      height: 9px;
+      background: #ff3d3d;
+      border-radius: 50%;
+      box-shadow: 0 0 12px #ff3d3d;
+    }
+
+    main {
+      max-width: 1400px;
+      margin: auto;
+      padding: 18px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 16px;
+    }
+
+    .card {
+      background: rgba(13, 24, 34, 0.92);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 15px;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+    }
+
+    h2 {
+      font-size: 15px;
+      margin: 0 0 12px;
+    }
+
+    .tabs {
+      display: flex;
+      gap: 7px;
+      flex-wrap: wrap;
+      margin-bottom: 12px;
+    }
+
+    .tabs button {
+      background: #122432;
+      color: #cbd8e0;
+      border: 1px solid #263b4b;
+      padding: 8px 11px;
+      border-radius: 999px;
+      cursor: pointer;
+    }
+
+    .tabs button.active {
+      background: var(--accent);
+      color: #101820;
+      border-color: var(--accent);
+      font-weight: 700;
+    }
+
+    .news {
+      display: grid;
+      gap: 9px;
+      max-height: 570px;
+      overflow-y: auto;
+    }
+
+    .item {
+      padding: 11px;
+      border: 1px solid #1a2d3b;
+      border-radius: 10px;
+      background: #0b151e;
+    }
+
+    .item a {
+      color: #eef6fb;
+      text-decoration: none;
+      font-weight: 700;
+      line-height: 1.35;
+    }
+
+    .item a:hover {
+      text-decoration: underline;
+    }
+
+    .meta {
+      color: var(--muted);
+      font-size: 11px;
+      margin-top: 6px;
+    }
+
+    .market {
+      min-height: 380px;
+    }
+
+    .impact {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+    }
+
+    .impact div {
+      padding: 12px;
+      border-radius: 10px;
+      background: #0a151e;
+      border: 1px solid var(--line);
+    }
+
+    .impact b {
+      display: block;
+      margin-bottom: 5px;
+    }
+
+    .status {
+      font-size: 11px;
+      color: var(--muted);
+      margin-top: 8px;
+    }
+
+    .footer {
+      color: #73899a;
+      font-size: 11px;
+      text-align: center;
+      padding: 20px;
+    }
+
+    tv-ticker-tape,
+    tv-market-overview {
+      display: block;
+      width: 100%;
+    }
+
+    @media (max-width: 900px) {
+      .grid {
+        grid-template-columns: 1fr;
+      }
+
+      .impact {
+        grid-template-columns: 1fr;
+      }
+
+      .title {
+        font-size: 20px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+  <div class="brand">
+
+    <div>
+      <div class="title">
+        🌍 WORLD WATCH — INDIA FIRST
+      </div>
+
+      <div class="sub">
+        Live global news • markets • geopolitics • India impact
+      </div>
+    </div>
+
+    <div class="live">
+      <span class="dot"></span>
+      LIVE
+      <span id="clock"></span>
+    </div>
+
+  </div>
+</header>
+
+
+<main>
+
+  <!-- MARKET TICKER -->
+
+  <section class="card" style="margin-bottom:16px">
+
+    <tv-ticker-tape
+      symbols='[
+        {"proName":"FOREXCOM:SPXUSD","title":"S&P 500"},
+        {"proName":"NASDAQ:NDX","title":"Nasdaq 100"},
+        {"proName":"TVC:GOLD","title":"Gold"},
+        {"proName":"TVC:USOIL","title":"Crude Oil"},
+        {"proName":"FX_IDC:USDINR","title":"USD/INR"},
+        {"proName":"BSE:SENSEX","title":"Sensex"}
+      ]'
+      show-hover="true">
+    </tv-ticker-tape>
+
+  </section>
+
+
+  <div class="grid">
+
+    <!-- NEWS -->
+
+    <section class="card">
+
+      <h2>
+        📰 LIVE WORLD NEWS
+      </h2>
+
+      <div
+        class="tabs"
+        id="tabs">
+      </div>
+
+      <div
+        id="news"
+        class="news">
+
+        <div class="item">
+          Loading live news…
+        </div>
+
+      </div>
+
+      <div
+        id="newsStatus"
+        class="status">
+      </div>
+
+    </section>
+
+
+    <!-- MARKETS -->
+
+    <section class="card market">
+
+      <h2>
+        📈 GLOBAL MARKETS
+      </h2>
+
+      <tv-market-overview
+        symbol-sectors='[
+          {
+            "sectionName":"Indices",
+            "symbols":[
+              "FOREXCOM:SPXUSD",
+              "NASDAQ:NDX",
+              "TVC:DJI",
+              "BSE:SENSEX",
+              "NSE:NIFTY"
+            ]
+          },
+          {
+            "sectionName":"Commodities",
+            "symbols":[
+              "TVC:GOLD",
+              "TVC:USOIL",
+              "TVC:UKOIL"
+            ]
+          },
+          {
+            "sectionName":"Currencies",
+            "symbols":[
+              "FX_IDC:USDINR",
+              "FX_IDC:EURUSD",
+              "FX_IDC:USDJPY"
+            ]
+          }
+        ]'>
+      </tv-market-overview>
+
+    </section>
+
+  </div>
+
+
+  <!-- INDIA IMPACT -->
+
+  <section
+    class="card"
+    style="margin-top:16px">
+
+    <h2>
+      🇮🇳 INDIA IMPACT — QUICK READ
+    </h2>
+
+    <div class="impact">
+
+      <div>
+        <b>🛢️ Oil</b>
+        Oil shock → import bill / inflation risk
+      </div>
+
+      <div>
+        <b>💵 Rupee</b>
+        USD/INR → imported inflation & capital flows
+      </div>
+
+      <div>
+        <b>📦 Trade</b>
+        Global demand, tariffs and supply chains
+      </div>
+
+      <div>
+        <b>🛡️ Security</b>
+        Wars/sanctions → defence, shipping and energy security
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <div class="footer">
+
+    News feed: GDELT • Market widgets: TradingView
+
+    <br>
+
+    Live timing depends on the underlying source/exchange.
+
+  </div>
+
+</main>
+
+
+<script>
+
+const topics = {
+
+  world: "🌍 World",
+
+  india: "🇮🇳 India",
+
+  usa: "🇺🇸 USA",
+
+  china: "🇨🇳 China",
+
+  middleeast: "🌍 Middle East",
+
+  russia: "🇷🇺 Russia/Ukraine",
+
+  energy: "🛢️ Energy",
+
+  markets: "📈 Markets"
+
+};
+
+
+let currentTopic = "world";
+
+
+function makeTabs() {
+
+  const el = document.getElementById("tabs");
+
+  el.innerHTML = "";
+
+  for (const [key, label] of Object.entries(topics)) {
+
+    const button = document.createElement("button");
+
+    button.textContent = label;
+
+    button.className =
+      key === currentTopic
+        ? "active"
+        : "";
+
+    button.onclick = () => {
+
+      currentTopic = key;
+
+      makeTabs();
+
+      loadNews();
+
+    };
+
+    el.appendChild(button);
+
+  }
+
+}
+
+
+function escapeHtml(value) {
+
+  return String(value).replace(
+    /[&<>"']/g,
+
+    function (char) {
+
+      return {
+
+        "&": "&amp;",
+
+        "<": "&lt;",
+
+        ">": "&gt;",
+
+        '"': "&quot;",
+
+        "'": "&#039;"
+
+      }[char];
+
+    }
+  );
+
+}
+
+
+async function loadNews() {
+
+  const box =
+    document.getElementById("news");
+
+  const status =
+    document.getElementById("newsStatus");
+
+  box.innerHTML =
+    '<div class="item">Refreshing live feed…</div>';
+
+  try {
+
+    const response = await fetch(
+      "/api/news?topic=" +
+      encodeURIComponent(currentTopic)
+    );
+
+    const data =
+      await response.json();
+
+    if (!data.ok) {
+
+      throw new Error(
+        data.error ||
+        "Feed error"
+      );
+
+    }
+
+    const articles =
+      data.articles || [];
+
+    if (!articles.length) {
+
+      box.innerHTML =
+        '<div class="item">No recent articles found.</div>';
+
+    } else {
+
+      box.innerHTML =
+        articles.map(article => `
+
+          <article class="item">
+
+            <a
+              href="${escapeHtml(article.url)}"
+              target="_blank"
+              rel="noopener noreferrer">
+
+              ${escapeHtml(article.title)}
+
+            </a>
+
+            <div class="meta">
+
+              ${escapeHtml(article.domain)}
+
+              ${article.sourcecountry
+                ? " • " +
+                  escapeHtml(
+                    article.sourcecountry
+                  )
+                : ""}
+
+              •
+
+              ${escapeHtml(
+                article.seendate
+              )}
+
+            </div>
+
+          </article>
+
+        `).join("");
+
+    }
+
+    status.textContent =
+      "Last refresh: " +
+      new Date(
+        data.updatedAt
+      ).toLocaleTimeString(
+        "en-IN",
+        { hour12: false }
+      );
+
+  } catch (error) {
+
+    box.innerHTML =
+      '<div class="item">' +
+      'Live feed temporarily unavailable. ' +
+      'Dashboard will retry automatically.' +
+      '</div>';
+
+    status.textContent =
+      error.message;
+
+  }
+
+}
+
+
+function updateClock() {
+
+  document.getElementById("clock")
+    .textContent =
+    new Date().toLocaleTimeString(
+      "en-IN",
+      { hour12: false }
+    );
+
+}
+
+
+makeTabs();
+
+loadNews();
+
+updateClock();
+
+
+setInterval(
+  updateClock,
+  1000
+);
+
+
+setInterval(
+  loadNews,
+  5 * 60 * 1000
+);
+
+</script>
+
+</body>
+</html>
